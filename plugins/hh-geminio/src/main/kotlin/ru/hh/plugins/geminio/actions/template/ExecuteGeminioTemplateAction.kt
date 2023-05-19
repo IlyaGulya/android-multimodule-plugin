@@ -42,7 +42,6 @@ class ExecuteGeminioTemplateAction(
         with(templatePresentation) {
             text = actionText
             description = actionDescription
-            isEnabledAndVisible = true
         }
     }
 

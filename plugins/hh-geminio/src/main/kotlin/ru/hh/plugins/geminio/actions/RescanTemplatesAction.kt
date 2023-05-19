@@ -16,7 +16,6 @@ class RescanTemplatesAction : AnAction() {
             text = "Rescan Templates"
             icon = AllIcons.Actions.Refresh
             description = "Rescan folder with templates"
-            isEnabledAndVisible = true
         }
     }
 
