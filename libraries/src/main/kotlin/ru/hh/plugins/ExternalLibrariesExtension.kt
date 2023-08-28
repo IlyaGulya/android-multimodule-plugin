@@ -8,23 +8,36 @@ import javax.inject.Inject
 abstract class ExternalLibrariesExtension @Inject constructor(private val providers: ProviderFactory) {
 
     val javaVersion = JavaVersion.VERSION_17
-    val chosenIdeaVersion: Product = Product.LocalIde(
-        pathToIde = systemProperty("androidStudioPath").get(),
-        compilerVersion = systemProperty("androidStudioCompilerVersion").get(),
-        pluginsNames = systemProperty("androidStudioPluginsNames").get()
-            .split(',')
-            .map(String::trim)
-            .filter(String::isNotEmpty)
-    )
-
+    val chosenIdeaVersion: Product
+        get() {
+            val androidStudioPath = systemProperty("androidStudioPath").get()
+            val pluginsNames = systemProperty("androidStudioPluginsNames").get()
+                .split(',')
+                .map(String::trim)
+                .filter(String::isNotEmpty)
+            return if (androidStudioPath.isNotBlank()) {
+                Product.LocalIde(
+                    pathToIde = androidStudioPath,
+                    compilerVersion = systemProperty("androidStudioCompilerVersion").get(),
+                    pluginsNames = pluginsNames
+                )
+            } else {
+                Product.ICBasedIde(
+                    ideVersion = "AI-232.8660.185.2321.10696284",
+                    pluginsNames = pluginsNames
+                )
+            }
+        }
     private val gradleIntellijPluginVersion = systemProperty("gradleIntellijPluginVersion").get()
     private val gradleChangelogPluginVersion = systemProperty("gradleChangelogPluginVersion").get()
     private val kotlinVersion = systemProperty("kotlinVersion").get()
     private val detektVersion = systemProperty("detektVersion").get()
 
     val kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    val gradleIntelliJPlugin = "org.jetbrains.intellij.plugins:gradle-intellij-plugin:$gradleIntellijPluginVersion"
-    val gradleChangelogPlugin = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:$gradleChangelogPluginVersion"
+    val gradleIntelliJPlugin =
+        "org.jetbrains.intellij.plugins:gradle-intellij-plugin:$gradleIntellijPluginVersion"
+    val gradleChangelogPlugin =
+        "org.jetbrains.intellij.plugins:gradle-changelog-plugin:$gradleChangelogPluginVersion"
 
     val kotlinXCli = "org.jetbrains.kotlinx:kotlinx-cli:0.2.1"
     val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
