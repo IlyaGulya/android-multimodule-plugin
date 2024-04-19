@@ -2,6 +2,8 @@
 
 package ru.hh.plugins.geminio.sdk.recipe.expressions
 
+import com.android.tools.idea.wizard.template.ModuleTemplateData
+import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
@@ -9,7 +11,9 @@ import io.kotest.matchers.string.shouldStartWith
 import ru.hh.plugins.geminio.sdk.helpers.GeminioExpressionUtils.createModuleTemplateData
 import ru.hh.plugins.geminio.sdk.helpers.GeminioExpressionUtils.createParametersMap
 import ru.hh.plugins.geminio.sdk.helpers.GeminioExpressionUtils.toExpression
+import ru.hh.plugins.geminio.sdk.recipe.models.expressions.RecipeExpression
 import ru.hh.plugins.geminio.sdk.recipe.models.expressions.RecipeExpressionCommand
+import ru.hh.plugins.geminio.sdk.template.aliases.AndroidStudioTemplateParameter
 import ru.hh.plugins.geminio.sdk.template.mapping.expressions.evaluateString
 
 internal class GeminioRecipeStringExpressionSpec : FreeSpec({
@@ -34,7 +38,10 @@ internal class GeminioRecipeStringExpressionSpec : FreeSpec({
             RecipeExpressionCommand.Fixed("Module")
         ).toExpression()
 
-        given.evaluateString(createModuleTemplateData(), createParametersMap()) shouldBe "BlankFragmentModule"
+        given.evaluateString(
+            createModuleTemplateData(),
+            createParametersMap()
+        ) shouldBe "BlankFragmentModule"
         given.evaluateString(
             createModuleTemplateData(),
             createParametersMap(className = "Changed")
@@ -91,3 +98,11 @@ internal class GeminioRecipeStringExpressionSpec : FreeSpec({
         ex.message shouldStartWith "Unknown parameter or not string parameter for string expression [${command.parameterId}]"
     }
 })
+
+private fun RecipeExpression.evaluateString(
+    templateData: ModuleTemplateData,
+    parameters: Map<String, AndroidStudioTemplateParameter>
+): String? {
+    return evaluateString(StubVirtualFile(), templateData, parameters)
+}
+

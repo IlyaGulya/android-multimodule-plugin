@@ -23,7 +23,7 @@ abstract class ExternalLibrariesExtension @Inject constructor(private val provid
                 )
             } else {
                 Product.ICBasedIde(
-                    ideVersion = "AI-232.8660.185.2321.10696284",
+                    ideVersion = systemProperty("androidStudioVersion").get(),
                     pluginsNames = pluginsNames
                 )
             }
@@ -89,6 +89,17 @@ abstract class ExternalLibrariesExtension @Inject constructor(private val provid
 
     @Suppress("detekt.StringLiteralDuplication")
     enum class PredefinedIdeProducts(val product: Product) {
+        ANDROID_STUDIO_KOALA(
+            Product.ICBasedIde(
+                ideVersion = "241.14494.158",
+                pluginsNames = listOf(
+                    "android",
+                    "Kotlin",
+                    "java",
+                    "Groovy",
+                )
+            )
+        ),
         ANDROID_STUDIO_IGUANA(
             Product.ICBasedIde(
                 ideVersion = "232.10227.8",

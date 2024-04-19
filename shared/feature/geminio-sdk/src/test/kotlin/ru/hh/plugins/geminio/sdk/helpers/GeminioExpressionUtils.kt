@@ -1,5 +1,6 @@
 package ru.hh.plugins.geminio.sdk.helpers
 
+import com.android.tools.idea.gradle.plugin.AgpVersions
 import com.android.tools.idea.wizard.template.ApiTemplateData
 import com.android.tools.idea.wizard.template.ApiVersion
 import com.android.tools.idea.wizard.template.Category
@@ -11,6 +12,7 @@ import com.android.tools.idea.wizard.template.ThemesData
 import com.android.tools.idea.wizard.template.ViewBindingSupport
 import com.android.tools.idea.wizard.template.booleanParameter
 import com.android.tools.idea.wizard.template.stringParameter
+import com.intellij.openapi.vfs.newvfs.impl.StubVirtualFile
 import ru.hh.plugins.geminio.sdk.recipe.models.expressions.RecipeExpression
 import ru.hh.plugins.geminio.sdk.recipe.models.expressions.RecipeExpressionCommand
 import ru.hh.plugins.geminio.sdk.recipe.models.expressions.RecipeExpressionModifier
@@ -44,7 +46,7 @@ internal object GeminioExpressionUtils {
         return ModuleTemplateData(
             projectTemplateData = ProjectTemplateData(
                 androidXSupport = true,
-                gradlePluginVersion = "6.3",
+                agpVersion = AgpVersions.latestKnown,
                 sdkDir = File("/AndroidSdk"),
                 language = Language.Kotlin,
                 kotlinVersion = "1.4.10",
@@ -80,7 +82,11 @@ internal object GeminioExpressionUtils {
                 appCompatVersion = 21,
             ),
             viewBindingSupport = ViewBindingSupport.NOT_SUPPORTED,
-            category = Category.Other
+            category = Category.Other,
+            isCompose = false,
+            isMaterial3 = false,
+            useGenericLocalTests = false,
+            useGenericInstrumentedTests = false,
         )
     }
 
@@ -94,6 +100,10 @@ internal object GeminioExpressionUtils {
             )
         ).toExpression()
 
-        return expression.evaluateString(createModuleTemplateData(), createParametersMap(className = className))
+        return expression.evaluateString(
+            StubVirtualFile(),
+            createModuleTemplateData(),
+            createParametersMap(className = className)
+        )
     }
 }

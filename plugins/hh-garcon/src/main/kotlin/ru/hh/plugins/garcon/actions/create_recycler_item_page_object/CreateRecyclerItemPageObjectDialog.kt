@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.xml.XmlFile
 import com.intellij.ui.RecentsManager
 import com.intellij.ui.layout.CCFlags
+import com.intellij.ui.layout.PropertyBinding
 import com.intellij.ui.layout.panel
 import org.jetbrains.kotlin.asJava.classes.KtLightClassForSourceDeclaration
 import org.jetbrains.kotlin.idea.refactoring.fqName.getKotlinFqName
@@ -49,7 +50,10 @@ class CreateRecyclerItemPageObjectDialog(
                 )
             }
             PropertiesComponent.getInstance()
-                .setValue(GarconConstants.RecentsKeys.OPEN_IN_EDITOR_FLAG, getOpenInEditor().toString())
+                .setValue(
+                    GarconConstants.RecentsKeys.OPEN_IN_EDITOR_FLAG,
+                    getOpenInEditor().toString()
+                )
             super.doOKAction()
         }
     }
@@ -58,7 +62,12 @@ class CreateRecyclerItemPageObjectDialog(
         return panel {
             titledRow(title = "Enter page object class name:") {
                 row {
-                    textField(this@CreateRecyclerItemPageObjectDialog::className)
+                    textField(
+                        PropertyBinding(
+                            get = { className },
+                            set = { className = it },
+                        )
+                    )
                 }
             }
             titledRow("Choose target <Screen> Page Object class") {
@@ -68,7 +77,8 @@ class CreateRecyclerItemPageObjectDialog(
                         chooserDialogTitle = "Choose target <Screen> Page Object class",
                         recentKey = GarconConstants.RecentsKeys.TARGET_SCREEN_CLASS,
                         initialText = null,
-                        classFilter = ClassFiltersFactory.getInstance(project).createKakaoScreensClassFilter(),
+                        classFilter = ClassFiltersFactory.getInstance(project)
+                            .createKakaoScreensClassFilter(),
                         onSelectTargetClassAction = { aClass, needChangeText ->
                             if (aClass is KtLightClassForSourceDeclaration) {
                                 targetClass = aClass.kotlinOrigin
@@ -145,6 +155,7 @@ class CreateRecyclerItemPageObjectDialog(
                 project.showErrorDialog("No target class specified")
                 false
             }
+
             else -> {
                 true
             }

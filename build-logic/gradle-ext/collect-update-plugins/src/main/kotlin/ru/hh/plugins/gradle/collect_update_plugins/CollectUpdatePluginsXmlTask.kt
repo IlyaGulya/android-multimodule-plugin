@@ -2,7 +2,7 @@ package ru.hh.plugins.gradle.collect_update_plugins
 
 import groovy.util.Node
 import groovy.util.NodeList
-import groovy.util.XmlParser
+import groovy.xml.XmlParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
@@ -26,7 +26,10 @@ abstract class CollectUpdatePluginsXmlTask @Inject constructor(
 
     private var customRepositoryUrl: String = ""
 
-    @Option(option = "customRepositoryUrl", description = "Configures the URL of custom plugins repository")
+    @Option(
+        option = "customRepositoryUrl",
+        description = "Configures the URL of custom plugins repository"
+    )
     open fun setUrl(url: String) {
         this.customRepositoryUrl = url
     }
@@ -50,7 +53,8 @@ abstract class CollectUpdatePluginsXmlTask @Inject constructor(
             .toSet()
         val repositoryBaseUrl = customRepositoryUrl
 
-        val updatePluginsXmlFileText = getUpdatePluginsXmlFileText(patchFilesDirs, repositoryBaseUrl)
+        val updatePluginsXmlFileText =
+            getUpdatePluginsXmlFileText(patchFilesDirs, repositoryBaseUrl)
 
         val output = outputFile.get().asFile
         output.writeText(updatePluginsXmlFileText)
@@ -97,7 +101,8 @@ abstract class CollectUpdatePluginsXmlTask @Inject constructor(
 
         val id = ideaPlugins.getNodeByName("id").getStringValue()
         val version = ideaPlugins.getNodeByName("version").getStringValue()
-        val sinceBuildVersion = ideaPlugins.getNodeByName("idea-version").getStringAttribute("since-build")
+        val sinceBuildVersion =
+            ideaPlugins.getNodeByName("idea-version").getStringAttribute("since-build")
 
         return IdeaPluginData(
             pluginId = id,
@@ -107,7 +112,9 @@ abstract class CollectUpdatePluginsXmlTask @Inject constructor(
     }
 
     private fun Node.getNodeByName(name: String) = (this[name] as NodeList)[0] as Node
-    private fun Node.getStringValue(): String = value().toString().removePrefix("[").removeSuffix("]")
+    private fun Node.getStringValue(): String =
+        value().toString().removePrefix("[").removeSuffix("]")
+
     private fun Node.getStringAttribute(name: String): String {
         return attribute(name).toString().removePrefix("[").removeSuffix("]")
     }

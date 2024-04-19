@@ -9,6 +9,7 @@ import com.intellij.refactoring.MoveDestination
 import com.intellij.refactoring.PackageWrapper
 import com.intellij.refactoring.ui.PackageNameReferenceEditorCombo
 import com.intellij.ui.layout.CCFlags
+import com.intellij.ui.layout.PropertyBinding
 import com.intellij.ui.layout.panel
 import org.jetbrains.kotlin.idea.refactoring.ui.KotlinDestinationFolderComboBox
 import ru.hh.plugins.extensions.isQualifiedPackageName
@@ -46,7 +47,12 @@ class CreateScreenPageObjectDialog(
         return panel {
             titledRow("Enter <Screen> page object class name:") {
                 row {
-                    textField(this@CreateScreenPageObjectDialog::className)
+                    textField(
+                        PropertyBinding(
+                            get = { className },
+                            set = { className = it }
+                        )
+                    )
                 }
             }
             titledRow("Choose destination package:") {
@@ -175,7 +181,8 @@ class CreateScreenPageObjectDialog(
     }
 
     private fun checkFileCanBeCreated(): Boolean {
-        val targetPsiDirectory = getTargetMoveDestination()?.targetPackage?.directories?.lastOrNull()
+        val targetPsiDirectory =
+            getTargetMoveDestination()?.targetPackage?.directories?.lastOrNull()
         return when (targetPsiDirectory?.checkFileCanBeCreated(className.toKotlinFileName()) == true) {
             false -> {
                 project.showErrorDialog(message = "Class with such name already exists")
@@ -198,6 +205,9 @@ class CreateScreenPageObjectDialog(
     }
 
     private fun saveOpenInEditorFlag(isOpenInEditor: Boolean) {
-        RecentsUtils.putProperty(GarconConstants.RecentsKeys.OPEN_IN_EDITOR_FLAG, isOpenInEditor.toString())
+        RecentsUtils.putProperty(
+            GarconConstants.RecentsKeys.OPEN_IN_EDITOR_FLAG,
+            isOpenInEditor.toString()
+        )
     }
 }

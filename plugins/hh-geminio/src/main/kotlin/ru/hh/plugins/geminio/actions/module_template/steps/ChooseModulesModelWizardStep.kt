@@ -1,5 +1,6 @@
 package ru.hh.plugins.geminio.actions.module_template.steps
 
+import com.android.tools.idea.appinspection.inspectors.network.view.details.createVerticalScrollPane
 import com.android.tools.idea.npw.model.RenderTemplateModel
 import com.android.tools.idea.wizard.model.ModelWizardStep
 import com.intellij.openapi.module.Module
@@ -77,7 +78,10 @@ class ChooseModulesModelWizardStep(
                         onItemToggleChangedListener = { onModuleItemChecked(it) }
                     )
 
-                    scrollPane(modulesJList)
+                    val scrollPane = createVerticalScrollPane(
+                        modulesJList
+                    )
+                    scrollPane()
                 }
             }
 
@@ -89,7 +93,9 @@ class ChooseModulesModelWizardStep(
                             border =
                                 EmptyBorder(TEXT_AREA_PADDING, TEXT_AREA_PADDING, TEXT_AREA_PADDING, TEXT_AREA_PADDING)
                         }
-                        scrollPane(readmeBlockTextArea)
+                        val scrollPane = createVerticalScrollPane(
+                            readmeBlockTextArea
+                        )
                     }
                 }
             }
